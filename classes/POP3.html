@@ -1,1670 +1,1360 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; user-scalable=0;"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
     <meta charset="utf-8"/>
-    <title>    PHPMailer &raquo; \POP3
-</title>
+    <title>PHPMailer</title>
     <meta name="author" content=""/>
     <meta name="description" content=""/>
-            <!--[if lt IE 9]>
-        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
-        <![endif]-->
-        <script src="../js/jquery-1.7.1.min.js" type="text/javascript"></script>
-        <script src="../js/jquery-ui-1.8.2.custom.min.js" type="text/javascript"></script>
-        <script src="../js/jquery.mousewheel.min.js" type="text/javascript"></script>
-        <script src="../js/bootstrap.js" type="text/javascript"></script>
-        <script src="../js/template.js" type="text/javascript"></script>
-        <script src="../js/prettify/prettify.min.js" type="text/javascript"></script>
+
+    <link href="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+    <link href="https://netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../css/prism.css" rel="stylesheet" media="all"/>
+    <link href="../css/template.css" rel="stylesheet" media="all"/>
     
-            <link href="../css/template.css" rel="stylesheet" media="all"/>
-    
-            <link rel="shortcut icon" href="../img/favicon.ico"/>
-        <link rel="apple-touch-icon" href="../img/apple-touch-icon.png"/>
-        <link rel="apple-touch-icon" sizes="72x72" href="../img/apple-touch-icon-72x72.png"/>
-        <link rel="apple-touch-icon" sizes="114x114" href="../img/apple-touch-icon-114x114.png"/>
-    </head>
+    <!--[if lt IE 9]>
+    <script src="https://html5shim.googlecode.com/svn/trunk/html5.js" type="text/javascript"></script>
+    <![endif]-->
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js" type="text/javascript"></script>
+    <script src="https://code.jquery.com/ui/1.10.3/jquery-ui.min.js" type="text/javascript"></script>
+    <script src="https://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+    <script src="../js/jquery.smooth-scroll.js"></script>
+    <script src="../js/prism.min.js"></script>
+    <!-- TODO: Add http://jscrollpane.kelvinluck.com/ to style the scrollbars for browsers not using webkit-->
+    <script type="text/javascript">
+    function loadExternalCodeSnippets() {
+        Array.prototype.slice.call(document.querySelectorAll('pre[data-src]')).forEach(function (pre) {
+            var src = pre.getAttribute('data-src');
+            var extension = (src.match(/\.(\w+)$/) || [, ''])[1];
+            var language = 'php';
+
+            var code = document.createElement('code');
+            code.className = 'language-' + language;
+
+            pre.textContent = '';
+
+            code.textContent = 'Loading…';
+
+            pre.appendChild(code);
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.open('GET', src, true);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState == 4) {
+
+                    if (xhr.status < 400 && xhr.responseText) {
+                        code.textContent = xhr.responseText;
+
+                        Prism.highlightElement(code);
+                    }
+                    else if (xhr.status >= 400) {
+                        code.textContent = '✖ Error ' + xhr.status + ' while fetching file: ' + xhr.statusText;
+                    }
+                    else {
+                        code.textContent = '✖ Error: File does not exist or is empty';
+                    }
+                }
+            };
+
+            xhr.send(null);
+        });
+    }
+
+    $(document).ready(function(){
+        loadExternalCodeSnippets();
+    });
+    $('#source-view').on('shown', function () {
+        loadExternalCodeSnippets();
+    })
+</script>
+
+    <link rel="shortcut icon" href="../images/favicon.ico"/>
+    <link rel="apple-touch-icon" href="../images/apple-touch-icon.png"/>
+    <link rel="apple-touch-icon" sizes="72x72" href="../images/apple-touch-icon-72x72.png"/>
+    <link rel="apple-touch-icon" sizes="114x114" href="../images/apple-touch-icon-114x114.png"/>
+</head>
 <body>
 
-        <div class="navbar navbar-fixed-top">
-        <div class="navbar-inner">
-            <div class="container">
-                <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                    <span class="icon-bar"></span> <span class="icon-bar"></span>
-                    <span class="icon-bar"></span> </a>
-                <a class="brand" href="../index.html">PHPMailer</a>
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <i class="icon-ellipsis-vertical"></i>
+            </a>
+            <a class="brand" href="../index.html">PHPMailer</a>
 
-                <div class="nav-collapse">
-                    <ul class="nav">
-                        <li class="dropdown">
-                            <a href="#api" class="dropdown-toggle" data-toggle="dropdown">
-                                API Documentation <b class="caret"></b>
-                            </a>
-                            <ul class="dropdown-menu">
-                                                                                            </ul>
-                        </li>
-                        <li class="dropdown" id="charts-menu">
-                            <a href="#charts" class="dropdown-toggle" data-toggle="dropdown">
-                                Charts <b class="caret"></b>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a href="../graph_class.html">
-                                        <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="dropdown" id="reports-menu">
-                            <a href="#reports" class="dropdown-toggle" data-toggle="dropdown">
-                                Reports <b class="caret"></b>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a href="../errors.html">
-                                        <i class="icon-list-alt"></i>&#160;Errors
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="../markers.html">
-                                        <i class="icon-list-alt"></i>&#160;Markers
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="../deprecated.html">
-                                        <i class="icon-list-alt"></i>&#160;Deprecated
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
+            <div class="nav-collapse">
+                <ul class="nav pull-right">
+                    <li class="dropdown">
+                        <a href="../index.html" class="dropdown-toggle" data-toggle="dropdown">
+                            API Documentation <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                                                    </ul>
+                    </li>
+                    <li class="dropdown" id="charts-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Charts <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../graphs/class.html">
+                                    <i class="icon-list-alt"></i>&#160;Class hierarchy diagram
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="dropdown" id="reports-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Reports <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>
+                                <a href="../reports/errors.html">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <i class="icon-list-alt"></i>&#160;Errors <span class="label label-info pull-right">0</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="../reports/markers.html">
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <i class="icon-list-alt"></i>&#160;Markers <span class="label label-info pull-right">4</span>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--<div class="go_to_top">-->
+    <!--<a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>-->
+    <!--</div>-->
+</div>
+
+<div id="___" class="container-fluid">
+        <section class="row-fluid">
+        <div class="span2 sidebar">
+                                <div class="accordion" style="margin-bottom: 0">
+        <div class="accordion-group">
+            <div class="accordion-heading">
+                                    <a class="accordion-toggle " data-toggle="collapse" data-target="#namespace-224999751"></a>
+                                <a href="../namespaces/default.html" style="margin-left: 30px; padding-left: 0">\</a>
+            </div>
+            <div id="namespace-224999751" class="accordion-body collapse in">
+                <div class="accordion-inner">
+
+                    
+                    <ul>
+                                                                                                    <li class="class"><a href="../classes/PHPMailer.html">PHPMailer</a></li>
+                                                    <li class="class"><a href="../classes/phpmailerException.html">phpmailerException</a></li>
+                                                    <li class="class"><a href="../classes/POP3.html">POP3</a></li>
+                                                    <li class="class"><a href="../classes/SMTP.html">SMTP</a></li>
+                                            </ul>
                 </div>
             </div>
         </div>
-        <div class="go_to_top">
-            <a href="#___" style="color: inherit">Back to top&#160;&#160;<i class="icon-upload icon-white"></i></a>
-        </div>
-    </div>
-    
-    <div id="___" class="container">
-        <noscript>
-            <div class="alert alert-warning">
-                Javascript is disabled; several features are only available if Javascript is enabled.
-            </div>
-        </noscript>
-
-        
-            <div class="row">
-        <div class="span4">
-                    <span class="btn-group visibility" data-toggle="buttons-checkbox">
-        <button class="btn public active" title="Show public elements">Public</button>
-        <button class="btn protected" title="Show protected elements">Protected</button>
-        <button class="btn private" title="Show private elements">Private</button>
-        <button class="btn inherited active" title="Show inherited elements">Inherited</button>
-    </span>
-    <div class="btn-group view pull-right" data-toggle="buttons-radio">
-        <button class="btn details" title="Show descriptions and method names"><i class="icon-list"></i></button>
-        <button class="btn simple" title="Show only method names"><i class="icon-align-justify"></i></button>
     </div>
 
-        <ul class="side-nav nav nav-list">
-        <li class="nav-header">
-            <i class="icon-custom icon-method"></i> Methods
-            <ul>
-                                                                                    <li class="method public">
-        <a href="#method___construct" title="__construct :: Constructor.">
-            <span class="description">Constructor.</span><pre>__construct</pre>
-        </a>
-    </li>
-
-                                                                                                        <li class="method public">
-        <a href="#method_popBeforeSmtp" title="popBeforeSmtp :: Simple static wrapper for all-in-one POP before SMTP">
-            <span class="description">Simple static wrapper for all-in-one POP before SMTP</span><pre>popBeforeSmtp</pre>
-        </a>
-    </li>
-
-                                                                                                        <li class="method public">
-        <a href="#method_authorise" title="authorise :: Authenticate with a POP3 server.">
-            <span class="description">Authenticate with a POP3 server.</span><pre>authorise</pre>
-        </a>
-    </li>
-
-                                                                                                        <li class="method public">
-        <a href="#method_connect" title="connect :: Connect to a POP3 server.">
-            <span class="description">Connect to a POP3 server.</span><pre>connect</pre>
-        </a>
-    </li>
-
-                                                                                                        <li class="method public">
-        <a href="#method_login" title="login :: Log in to the POP3 server.">
-            <span class="description">Log in to the POP3 server.</span><pre>login</pre>
-        </a>
-    </li>
-
-                                                                                                        <li class="method public">
-        <a href="#method_disconnect" title="disconnect :: Disconnect from the POP3 server.">
-            <span class="description">Disconnect from the POP3 server.</span><pre>disconnect</pre>
-        </a>
-    </li>
-
-                                                                                                                                                                                                                                                                                                                                        </ul>
-        </li>
-        <li class="nav-header protected">» Protected
-            <ul>
-                                                                                                                                                                                                                                                                                                                                                                                                                                        </ul>
-        </li>
-        <li class="nav-header private">» Private
-            <ul>
-                                                                                                                                                                                                                                                                                    <li class="method private">
-                            <a href="#method_getResponse" title="getResponse :: Get a response from the POP3 server.">
-                                <span class="description">Get a response from the POP3 server.</span><pre>getResponse</pre>
-                            </a>
-                        </li>
-                                                                                <li class="method private">
-                            <a href="#method_sendString" title="sendString :: Send raw data to the POP3 server.">
-                                <span class="description">Send raw data to the POP3 server.</span><pre>sendString</pre>
-                            </a>
-                        </li>
-                                                                                <li class="method private">
-                            <a href="#method_checkResponse" title="checkResponse :: Checks the POP3 server response.">
-                                <span class="description">Checks the POP3 server response.</span><pre>checkResponse</pre>
-                            </a>
-                        </li>
-                                                                                <li class="method private">
-                            <a href="#method_displayErrors" title="displayErrors :: Display errors if debug is enabled.">
-                                <span class="description">Display errors if debug is enabled.</span><pre>displayErrors</pre>
-                            </a>
-                        </li>
-                                                                                <li class="method private">
-                            <a href="#method_catchWarning" title="catchWarning :: POP3 connection error handler.">
-                                <span class="description">POP3 connection error handler.</span><pre>catchWarning</pre>
-                            </a>
-                        </li>
-                                                </ul>
-        </li>
-        <li class="nav-header">
-            <i class="icon-custom icon-constant"></i> Constants
-            <ul>
-                                <li class="constant ">
-                    <a href="#constant_CRLF" title="CRLF :: Line break constant">
-                        <span class="description">Line break constant</span><pre>CRLF</pre>
-                    </a>
-                </li>
-                            </ul>
-        </li>
-    </ul>
-
-
         </div>
+    </section>
+    <section class="row-fluid">
+        <div class="span10 offset2">
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <nav>
+                                                <a href="../namespaces/default.html">\</a> <i class="icon-level-up"></i>
+                                            </nav>
+                    <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal"><i class="icon-code"></i></a>
 
-        <div class="span8">
-            <div class="element class">
-                <h1>POP3</h1>
-                <small style="display: block; text-align: right">
-                                                        </small>
-                <p class="short_description">PHPMailer POP-Before-SMTP Authentication Class.</p>
-                <div class="details">
-                    <div class="long_description">
-                        <p>Specifically for PHPMailer to use for RFC1939 POP-before-SMTP authentication.
+                    <h1><small>\</small>POP3</h1>
+                    <p><em>PHPMailer POP-Before-SMTP Authentication Class.</em></p>
+                    <p>Specifically for PHPMailer to use for RFC1939 POP-before-SMTP authentication.
 Does not support APOP.</p>
 
-                    </div>
-                    <table class="table table-bordered">
-                                                                                    <tr>
-                                    <th>
-                                        package
-                                                                            </th>
-                                    <td>
-                                                                                <p>PHPMailer</p>
-
-                                    </td>
-                                </tr>
-                                                                                                                <tr>
-                                    <th>
-                                        author
-                                                                            </th>
-                                    <td>
-                                                                                <p>Richard Davey (original author) <a href="&#x6d;&#97;&#x69;&#108;&#x74;&#111;&#x3a;&#x72;&#105;&#x63;&#104;&#x40;&#99;&#x6f;&#114;&#101;&#x70;&#104;&#x70;&#46;&#x63;&#111;&#46;&#x75;&#107;">&#x72;&#105;&#x63;&#104;&#x40;&#99;&#x6f;&#114;&#101;&#x70;&#104;&#x70;&#46;&#x63;&#111;&#46;&#x75;&#107;</a></p>
-
-                                    </td>
-                                </tr>
-                                                            <tr>
-                                    <th>
-                                        author
-                                                                            </th>
-                                    <td>
-                                                                                <p>Marcus Bointon (coolbru) <a href="&#109;&#97;&#105;&#x6c;&#x74;o&#58;&#112;&#104;&#x70;&#x6d;a&#105;&#108;&#101;&#x72;&#x40;s&#121;&#110;&#x63;&#x68;&#x72;o&#109;&#101;&#x64;&#x69;&#x61;&#46;&#99;&#111;&#x2e;&#x75;&#x6b;">&#112;&#104;&#x70;&#x6d;a&#105;&#108;&#101;&#x72;&#x40;s&#121;&#110;&#x63;&#x68;&#x72;o&#109;&#101;&#x64;&#x69;&#x61;&#46;&#99;&#111;&#x2e;&#x75;&#x6b;</a></p>
-
-                                    </td>
-                                </tr>
-                                                            <tr>
-                                    <th>
-                                        author
-                                                                            </th>
-                                    <td>
-                                                                                <p>Jim Jagielski (jimjag) <a href="&#109;&#97;&#x69;&#x6c;&#116;&#111;&#x3a;&#x6a;&#105;&#109;&#x6a;&#x61;&#103;&#64;&#x67;&#x6d;a&#105;&#x6c;&#x2e;c&#111;&#109;">&#x6a;&#105;&#109;&#x6a;&#x61;&#103;&#64;&#x67;&#x6d;a&#105;&#x6c;&#x2e;c&#111;&#109;</a></p>
-
-                                    </td>
-                                </tr>
-                                                            <tr>
-                                    <th>
-                                        author
-                                                                            </th>
-                                    <td>
-                                                                                <p>Andy Prevost (codeworxtech) <a href="&#109;&#x61;&#105;&#x6c;&#116;&#x6f;&#58;&#x63;o&#100;&#x65;&#119;&#x6f;&#114;&#x78;&#116;&#x65;&#99;&#104;&#x40;&#117;&#x73;&#101;&#x72;&#115;&#x2e;&#115;&#x6f;u&#114;&#x63;&#101;&#x66;&#111;&#x72;&#103;&#x65;&#46;&#110;&#x65;&#116;">&#x63;o&#100;&#x65;&#119;&#x6f;&#114;&#x78;&#116;&#x65;&#99;&#104;&#x40;&#117;&#x73;&#101;&#x72;&#115;&#x2e;&#115;&#x6f;u&#114;&#x63;&#101;&#x66;&#111;&#x72;&#103;&#x65;&#46;&#110;&#x65;&#116;</a></p>
-
-                                    </td>
-                                </tr>
-                                                                        </table>
-
-                    <h3><i class="icon-custom icon-method"></i> Methods</h3>
-                                                                <a id="method___construct"></a>
-                        <div class="element clickable method public method___construct" data-toggle="collapse" data-target=".method___construct .collapse">
-                            <h2>Constructor.</h2>
-                            <pre>__construct() </pre>
-                            <div class="labels">
-                                                                                                                                                                                            </div>
-                            <div class="row collapse">
-                                <div class="detail-description">
-                                    <div class="long_description">
-</div>
-
-                                    <table class="table">
-                                                                                    <tr>
-                                                <th>
-                                                    access
-                                                </th>
-                                                <td>
-                                                                                                                                                                    <p>public</p>
-
-                                                                                                    </td>
-                                            </tr>
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
-                                                                            </table>
-
-                                    
-                                                                    </div>
-                            </div>
-                        </div>
-                                            <a id="method_popBeforeSmtp"></a>
-                        <div class="element clickable method public method_popBeforeSmtp" data-toggle="collapse" data-target=".method_popBeforeSmtp .collapse">
-                            <h2>Simple static wrapper for all-in-one POP before SMTP</h2>
-                            <pre>popBeforeSmtp(mixed $host, bool $port = false, bool $tval = false, string $username = &#039;&#039;, string $password = &#039;&#039;, int $debug_level) : bool</pre>
-                            <div class="labels">
-                                                                <span class="label">static</span>                                                                                                                            </div>
-                            <div class="row collapse">
-                                <div class="detail-description">
-                                    <div class="long_description">
-</div>
-
-                                    <table class="table">
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
-                                                                            </table>
-
-                                                                            <h3>Arguments</h3>
-                                                                                    <div class="subelement argument">
-                                                <h4>$host</h4>
-                                                <code>mixed</code><p>
-</p>
-                                            </div>
-                                                                                    <div class="subelement argument">
-                                                <h4>$port</h4>
-                                                <code>bool</code><p>
-</p>
-                                            </div>
-                                                                                    <div class="subelement argument">
-                                                <h4>$tval</h4>
-                                                <code>bool</code><p>
-</p>
-                                            </div>
-                                                                                    <div class="subelement argument">
-                                                <h4>$username</h4>
-                                                <code>string</code><p>
-</p>
-                                            </div>
-                                                                                    <div class="subelement argument">
-                                                <h4>$password</h4>
-                                                <code>string</code><p>
-</p>
-                                            </div>
-                                                                                    <div class="subelement argument">
-                                                <h4>$debug_level</h4>
-                                                <code>int</code><p>
-</p>
-                                            </div>
-                                                                            
-                                                                            <h3>Response</h3>
-                                        <code>bool</code><p>
-</p>
-                                                                    </div>
-                            </div>
-                        </div>
-                                            <a id="method_authorise"></a>
-                        <div class="element clickable method public method_authorise" data-toggle="collapse" data-target=".method_authorise .collapse">
-                            <h2>Authenticate with a POP3 server.</h2>
-                            <pre>authorise(string $host, bool|int $port = false, bool|int $tval = false, string $username = &#039;&#039;, string $password = &#039;&#039;, int $debug_level) : bool</pre>
-                            <div class="labels">
-                                                                                                                                                                                            </div>
-                            <div class="row collapse">
-                                <div class="detail-description">
-                                    <div class="long_description"><p>A connect, login, disconnect sequence
-appropriate for POP-before SMTP authorisation.</p>
-</div>
-
-                                    <table class="table">
-                                                                                    <tr>
-                                                <th>
-                                                    access
-                                                </th>
-                                                <td>
-                                                                                                                                                                    <p>public</p>
-
-                                                                                                    </td>
-                                            </tr>
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
-                                                                            </table>
-
-                                                                            <h3>Arguments</h3>
-                                                                                    <div class="subelement argument">
-                                                <h4>$host</h4>
-                                                <code>string</code><p>
-</p>
-                                            </div>
-                                                                                    <div class="subelement argument">
-                                                <h4>$port</h4>
-                                                <code>bool|int</code><p>
-</p>
-                                            </div>
-                                                                                    <div class="subelement argument">
-                                                <h4>$tval</h4>
-                                                <code>bool|int</code><p>
-</p>
-                                            </div>
-                                                                                    <div class="subelement argument">
-                                                <h4>$username</h4>
-                                                <code>string</code><p>
-</p>
-                                            </div>
-                                                                                    <div class="subelement argument">
-                                                <h4>$password</h4>
-                                                <code>string</code><p>
-</p>
-                                            </div>
-                                                                                    <div class="subelement argument">
-                                                <h4>$debug_level</h4>
-                                                <code>int</code><p>
-</p>
-                                            </div>
-                                                                            
-                                                                            <h3>Response</h3>
-                                        <code>bool</code><p>
-</p>
-                                                                    </div>
-                            </div>
-                        </div>
-                                            <a id="method_connect"></a>
-                        <div class="element clickable method public method_connect" data-toggle="collapse" data-target=".method_connect .collapse">
-                            <h2>Connect to a POP3 server.</h2>
-                            <pre>connect(string $host, bool|int $port = false, integer $tval = 30) : boolean</pre>
-                            <div class="labels">
-                                                                                                                                                                                            </div>
-                            <div class="row collapse">
-                                <div class="detail-description">
-                                    <div class="long_description">
-</div>
-
-                                    <table class="table">
-                                                                                    <tr>
-                                                <th>
-                                                    access
-                                                </th>
-                                                <td>
-                                                                                                                                                                    <p>public</p>
-
-                                                                                                    </td>
-                                            </tr>
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
-                                                                            </table>
-
-                                                                            <h3>Arguments</h3>
-                                                                                    <div class="subelement argument">
-                                                <h4>$host</h4>
-                                                <code>string</code><p>
-</p>
-                                            </div>
-                                                                                    <div class="subelement argument">
-                                                <h4>$port</h4>
-                                                <code>bool|int</code><p>
-</p>
-                                            </div>
-                                                                                    <div class="subelement argument">
-                                                <h4>$tval</h4>
-                                                <code>integer</code><p>
-</p>
-                                            </div>
-                                                                            
-                                                                            <h3>Response</h3>
-                                        <code>boolean</code><p>
-</p>
-                                                                    </div>
-                            </div>
-                        </div>
-                                            <a id="method_login"></a>
-                        <div class="element clickable method public method_login" data-toggle="collapse" data-target=".method_login .collapse">
-                            <h2>Log in to the POP3 server.</h2>
-                            <pre>login(string $username = &#039;&#039;, string $password = &#039;&#039;) : boolean</pre>
-                            <div class="labels">
-                                                                                                                                                                                            </div>
-                            <div class="row collapse">
-                                <div class="detail-description">
-                                    <div class="long_description"><p>Does not support APOP (RFC 2828, 4949).</p>
-</div>
-
-                                    <table class="table">
-                                                                                    <tr>
-                                                <th>
-                                                    access
-                                                </th>
-                                                <td>
-                                                                                                                                                                    <p>public</p>
-
-                                                                                                    </td>
-                                            </tr>
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
-                                                                            </table>
-
-                                                                            <h3>Arguments</h3>
-                                                                                    <div class="subelement argument">
-                                                <h4>$username</h4>
-                                                <code>string</code><p>
-</p>
-                                            </div>
-                                                                                    <div class="subelement argument">
-                                                <h4>$password</h4>
-                                                <code>string</code><p>
-</p>
-                                            </div>
-                                                                            
-                                                                            <h3>Response</h3>
-                                        <code>boolean</code><p>
-</p>
-                                                                    </div>
-                            </div>
-                        </div>
-                                            <a id="method_disconnect"></a>
-                        <div class="element clickable method public method_disconnect" data-toggle="collapse" data-target=".method_disconnect .collapse">
-                            <h2>Disconnect from the POP3 server.</h2>
-                            <pre>disconnect() </pre>
-                            <div class="labels">
-                                                                                                                                                                                            </div>
-                            <div class="row collapse">
-                                <div class="detail-description">
-                                    <div class="long_description">
-</div>
-
-                                    <table class="table">
-                                                                                    <tr>
-                                                <th>
-                                                    access
-                                                </th>
-                                                <td>
-                                                                                                                                                                    <p>public</p>
-
-                                                                                                    </td>
-                                            </tr>
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
-                                                                            </table>
-
-                                    
-                                                                    </div>
-                            </div>
-                        </div>
-                                            <a id="method_getResponse"></a>
-                        <div class="element clickable method private method_getResponse" data-toggle="collapse" data-target=".method_getResponse .collapse">
-                            <h2>Get a response from the POP3 server.</h2>
-                            <pre>getResponse(integer $size = 128) : string</pre>
-                            <div class="labels">
-                                                                                                                                                                                            </div>
-                            <div class="row collapse">
-                                <div class="detail-description">
-                                    <div class="long_description"><p>$size is the maximum number of bytes to retrieve</p>
-</div>
-
-                                    <table class="table">
-                                                                                    <tr>
-                                                <th>
-                                                    access
-                                                </th>
-                                                <td>
-                                                                                                                                                                    <p>private</p>
-
-                                                                                                    </td>
-                                            </tr>
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
-                                                                            </table>
-
-                                                                            <h3>Arguments</h3>
-                                                                                    <div class="subelement argument">
-                                                <h4>$size</h4>
-                                                <code>integer</code><p>
-</p>
-                                            </div>
-                                                                            
-                                                                            <h3>Response</h3>
-                                        <code>string</code><p>
-</p>
-                                                                    </div>
-                            </div>
-                        </div>
-                                            <a id="method_sendString"></a>
-                        <div class="element clickable method private method_sendString" data-toggle="collapse" data-target=".method_sendString .collapse">
-                            <h2>Send raw data to the POP3 server.</h2>
-                            <pre>sendString(string $string) : integer</pre>
-                            <div class="labels">
-                                                                                                                                                                                            </div>
-                            <div class="row collapse">
-                                <div class="detail-description">
-                                    <div class="long_description">
-</div>
-
-                                    <table class="table">
-                                                                                    <tr>
-                                                <th>
-                                                    access
-                                                </th>
-                                                <td>
-                                                                                                                                                                    <p>private</p>
-
-                                                                                                    </td>
-                                            </tr>
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
-                                                                            </table>
-
-                                                                            <h3>Arguments</h3>
-                                                                                    <div class="subelement argument">
-                                                <h4>$string</h4>
-                                                <code>string</code><p>
-</p>
-                                            </div>
-                                                                            
-                                                                            <h3>Response</h3>
-                                        <code>integer</code><p>
-</p>
-                                                                    </div>
-                            </div>
-                        </div>
-                                            <a id="method_checkResponse"></a>
-                        <div class="element clickable method private method_checkResponse" data-toggle="collapse" data-target=".method_checkResponse .collapse">
-                            <h2>Checks the POP3 server response.</h2>
-                            <pre>checkResponse(string $string) : boolean</pre>
-                            <div class="labels">
-                                                                                                                                                                                            </div>
-                            <div class="row collapse">
-                                <div class="detail-description">
-                                    <div class="long_description"><p>Looks for for +OK or -ERR.</p>
-</div>
-
-                                    <table class="table">
-                                                                                    <tr>
-                                                <th>
-                                                    access
-                                                </th>
-                                                <td>
-                                                                                                                                                                    <p>private</p>
-
-                                                                                                    </td>
-                                            </tr>
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
-                                                                            </table>
-
-                                                                            <h3>Arguments</h3>
-                                                                                    <div class="subelement argument">
-                                                <h4>$string</h4>
-                                                <code>string</code><p>
-</p>
-                                            </div>
-                                                                            
-                                                                            <h3>Response</h3>
-                                        <code>boolean</code><p>
-</p>
-                                                                    </div>
-                            </div>
-                        </div>
-                                            <a id="method_displayErrors"></a>
-                        <div class="element clickable method private method_displayErrors" data-toggle="collapse" data-target=".method_displayErrors .collapse">
-                            <h2>Display errors if debug is enabled.</h2>
-                            <pre>displayErrors() </pre>
-                            <div class="labels">
-                                                                                                                                                                                            </div>
-                            <div class="row collapse">
-                                <div class="detail-description">
-                                    <div class="long_description">
-</div>
-
-                                    <table class="table">
-                                                                                    <tr>
-                                                <th>
-                                                    access
-                                                </th>
-                                                <td>
-                                                                                                                                                                    <p>private</p>
-
-                                                                                                    </td>
-                                            </tr>
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
-                                                                            </table>
-
-                                    
-                                                                    </div>
-                            </div>
-                        </div>
-                                            <a id="method_catchWarning"></a>
-                        <div class="element clickable method private method_catchWarning" data-toggle="collapse" data-target=".method_catchWarning .collapse">
-                            <h2>POP3 connection error handler.</h2>
-                            <pre>catchWarning(integer $errno, string $errstr, string $errfile, integer $errline) </pre>
-                            <div class="labels">
-                                                                                                                                                                                            </div>
-                            <div class="row collapse">
-                                <div class="detail-description">
-                                    <div class="long_description">
-</div>
-
-                                    <table class="table">
-                                                                                    <tr>
-                                                <th>
-                                                    access
-                                                </th>
-                                                <td>
-                                                                                                                                                                    <p>private</p>
-
-                                                                                                    </td>
-                                            </tr>
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
-                                                                                    <tr>
-                                                <th>
-                                                    
-                                                </th>
-                                                <td>
-                                                                                                    </td>
-                                            </tr>
-                                                                            </table>
-
-                                                                            <h3>Arguments</h3>
-                                                                                    <div class="subelement argument">
-                                                <h4>$errno</h4>
-                                                <code>integer</code><p>
-</p>
-                                            </div>
-                                                                                    <div class="subelement argument">
-                                                <h4>$errstr</h4>
-                                                <code>string</code><p>
-</p>
-                                            </div>
-                                                                                    <div class="subelement argument">
-                                                <h4>$errfile</h4>
-                                                <code>string</code><p>
-</p>
-                                            </div>
-                                                                                    <div class="subelement argument">
-                                                <h4>$errline</h4>
-                                                <code>integer</code><p>
-</p>
-                                            </div>
-                                                                            
-                                                                    </div>
-                            </div>
-                        </div>
+                    <section id="summary">
+                        <h2>Summary</h2>
+                        <section class="row-fluid heading">
+                            <section class="span4">
+                                <a href="#methods">Methods</a>
+                            </section>
+                            <section class="span4">
+                                <a href="#properties">Properties</a>
+                            </section>
+                            <section class="span4">
+                                <a href="#constants">Constants</a>
+                            </section>
+                        </section>
+                        <section class="row-fluid public">
+                            <section class="span4">
+                                                                    <a href="../classes/POP3.html#method___construct" class="">__construct()</a><br />
+                                                                    <a href="../classes/POP3.html#method_popBeforeSmtp" class="">popBeforeSmtp()</a><br />
+                                                                    <a href="../classes/POP3.html#method_authorise" class="">authorise()</a><br />
+                                                                    <a href="../classes/POP3.html#method_connect" class="">connect()</a><br />
+                                                                    <a href="../classes/POP3.html#method_login" class="">login()</a><br />
+                                                                    <a href="../classes/POP3.html#method_disconnect" class="">disconnect()</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <a href="../classes/POP3.html#property_Version" class="">$Version</a><br />
+                                                                    <a href="../classes/POP3.html#property_POP3_PORT" class="">$POP3_PORT</a><br />
+                                                                    <a href="../classes/POP3.html#property_POP3_TIMEOUT" class="">$POP3_TIMEOUT</a><br />
+                                                                    <a href="../classes/POP3.html#property_CRLF" class="deprecated">$CRLF</a><br />
+                                                                    <a href="../classes/POP3.html#property_do_debug" class="">$do_debug</a><br />
+                                                                    <a href="../classes/POP3.html#property_host" class="">$host</a><br />
+                                                                    <a href="../classes/POP3.html#property_port" class="">$port</a><br />
+                                                                    <a href="../classes/POP3.html#property_tval" class="">$tval</a><br />
+                                                                    <a href="../classes/POP3.html#property_username" class="">$username</a><br />
+                                                                    <a href="../classes/POP3.html#property_password" class="">$password</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <a href="../classes/POP3.html#constant_CRLF" class="">CRLF</a><br />
+                                                            </section>
+                        </section>
+                        <section class="row-fluid protected">
+                            <section class="span4">
+                                                                    <em>No protected methods found</em>
+                                                            </section>
+                            <section class="span4">
+                                                                    <em>No protected properties found</em>
+                                                            </section>
+                            <section class="span4">
+                                <em>N/A</em>
+                            </section>
+                        </section>
+                        <section class="row-fluid private">
+                            <section class="span4">
+                                                                    <a href="../classes/POP3.html#method_getResponse" class="">getResponse()</a><br />
+                                                                    <a href="../classes/POP3.html#method_sendString" class="">sendString()</a><br />
+                                                                    <a href="../classes/POP3.html#method_checkResponse" class="">checkResponse()</a><br />
+                                                                    <a href="../classes/POP3.html#method_displayErrors" class="">displayErrors()</a><br />
+                                                                    <a href="../classes/POP3.html#method_catchWarning" class="">catchWarning()</a><br />
+                                                            </section>
+                            <section class="span4">
+                                                                    <a href="../classes/POP3.html#property_pop_conn" class="">$pop_conn</a><br />
+                                                                    <a href="../classes/POP3.html#property_connected" class="">$connected</a><br />
+                                                                    <a href="../classes/POP3.html#property_error" class="">$error</a><br />
+                                                            </section>
+                            <section class="span4">
+                                <em>N/A</em>
+                            </section>
+                        </section>
+                    </section>
+                </div>
+                <aside class="span4 detailsbar">
+                                        
                     
-                                            <h3><i class="icon-custom icon-constant"></i> Constants</h3>
-                                                    <a id="constant_CRLF"> </a>
-                            <div class="element clickable constant  constant_CRLF" data-toggle="collapse" data-target=".constant_CRLF .collapse">
-                                <h2>Line break constant</h2>
-                                <pre>CRLF</pre>
-                                <div class="labels">
-                                                                    </div>
-                                <div class="row collapse">
-                                    <div class="detail-description">
-                                        <div class="long_description">
-</div>
-                                        <table class="table">
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                                    
+                    <dl>
+                        <dt>File</dt>
+                            <dd><a href="../files/class.pop3.php.html"><div class="path-wrapper">class.pop3.php</div></a></dd>
+                                                <dt>Package</dt>
+                            <dd><div class="namespace-wrapper">\PHPMailer</div></dd>
+                                                <dt>Class hierarchy</dt>
+                            <dd class="hierarchy">
+                                                                                                                                                                    <div class="namespace-wrapper">\POP3</div>
+                            </dd>
 
-                                                                                                            </td>
-                                                </tr>
-                                                                                    </table>
-                                    </div>
-                                </div>
-                            </div>
-                                            
-                                                                <h3><i class="icon-custom icon-property"></i> Properties</h3>
-                                                    <a id="property_Version"> </a>
-                            <div class="element clickable property public property_Version" data-toggle="collapse" data-target=".property_Version .collapse">
-                                <h2>The POP3 PHPMailer Version number.</h2>
-                                <pre>Version</pre>
-                                <div class="labels">
-                                                                                                        </div>
-                                <div class="row collapse">
-                                    <div class="detail-description">
-                                        <div class="long_description">
-</div>
-
-                                        <table class="table">
-                                                                                            <tr>
-                                                    <th>
-                                                        type
-                                                    </th>
-                                                    <td>
-                                                                                                                    <p>string</p>
-
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        access
-                                                    </th>
-                                                    <td>
-                                                                                                                    <p>public</p>
-
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                    </table>
-                                    </div>
-                                </div>
-                            </div>
-                                                    <a id="property_POP3_PORT"> </a>
-                            <div class="element clickable property public property_POP3_PORT" data-toggle="collapse" data-target=".property_POP3_PORT .collapse">
-                                <h2>Default POP3 port number.</h2>
-                                <pre>POP3_PORT</pre>
-                                <div class="labels">
-                                                                                                        </div>
-                                <div class="row collapse">
-                                    <div class="detail-description">
-                                        <div class="long_description">
-</div>
-
-                                        <table class="table">
-                                                                                            <tr>
-                                                    <th>
-                                                        type
-                                                    </th>
-                                                    <td>
-                                                                                                                    <p>int</p>
-
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        access
-                                                    </th>
-                                                    <td>
-                                                                                                                    <p>public</p>
-
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                    </table>
-                                    </div>
-                                </div>
-                            </div>
-                                                    <a id="property_POP3_TIMEOUT"> </a>
-                            <div class="element clickable property public property_POP3_TIMEOUT" data-toggle="collapse" data-target=".property_POP3_TIMEOUT .collapse">
-                                <h2>Default timeout in seconds.</h2>
-                                <pre>POP3_TIMEOUT</pre>
-                                <div class="labels">
-                                                                                                        </div>
-                                <div class="row collapse">
-                                    <div class="detail-description">
-                                        <div class="long_description">
-</div>
-
-                                        <table class="table">
-                                                                                            <tr>
-                                                    <th>
-                                                        type
-                                                    </th>
-                                                    <td>
-                                                                                                                    <p>int</p>
-
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        access
-                                                    </th>
-                                                    <td>
-                                                                                                                    <p>public</p>
-
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                    </table>
-                                    </div>
-                                </div>
-                            </div>
-                                                    <a id="property_CRLF"> </a>
-                            <div class="element clickable property public property_CRLF" data-toggle="collapse" data-target=".property_CRLF .collapse">
-                                <h2>POP3 Carriage Return + Line Feed.</h2>
-                                <pre>CRLF</pre>
-                                <div class="labels">
-                                                                                                        </div>
-                                <div class="row collapse">
-                                    <div class="detail-description">
-                                        <div class="long_description">
-</div>
-
-                                        <table class="table">
-                                                                                            <tr>
-                                                    <th>
-                                                        type
-                                                    </th>
-                                                    <td>
-                                                                                                                    <p>string</p>
-
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        access
-                                                    </th>
-                                                    <td>
-                                                                                                                    <p>public</p>
-
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        deprecated
-                                                    </th>
-                                                    <td>
-                                                                                                                    <p>Use the constant instead</p>
-
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                    </table>
-                                    </div>
-                                </div>
-                            </div>
-                                                    <a id="property_do_debug"> </a>
-                            <div class="element clickable property public property_do_debug" data-toggle="collapse" data-target=".property_do_debug .collapse">
-                                <h2>Debug display level.</h2>
-                                <pre>do_debug</pre>
-                                <div class="labels">
-                                                                                                        </div>
-                                <div class="row collapse">
-                                    <div class="detail-description">
-                                        <div class="long_description"><p>Options: 0 = no, 1+ = yes</p>
-</div>
-
-                                        <table class="table">
-                                                                                            <tr>
-                                                    <th>
-                                                        type
-                                                    </th>
-                                                    <td>
-                                                                                                                    <p>int</p>
-
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        access
-                                                    </th>
-                                                    <td>
-                                                                                                                    <p>public</p>
-
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                    </table>
-                                    </div>
-                                </div>
-                            </div>
-                                                    <a id="property_host"> </a>
-                            <div class="element clickable property public property_host" data-toggle="collapse" data-target=".property_host .collapse">
-                                <h2>POP3 mail server hostname.</h2>
-                                <pre>host</pre>
-                                <div class="labels">
-                                                                                                        </div>
-                                <div class="row collapse">
-                                    <div class="detail-description">
-                                        <div class="long_description">
-</div>
-
-                                        <table class="table">
-                                                                                            <tr>
-                                                    <th>
-                                                        type
-                                                    </th>
-                                                    <td>
-                                                                                                                    <p>string</p>
-
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        access
-                                                    </th>
-                                                    <td>
-                                                                                                                    <p>public</p>
-
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                    </table>
-                                    </div>
-                                </div>
-                            </div>
-                                                    <a id="property_port"> </a>
-                            <div class="element clickable property public property_port" data-toggle="collapse" data-target=".property_port .collapse">
-                                <h2>POP3 port number.</h2>
-                                <pre>port</pre>
-                                <div class="labels">
-                                                                                                        </div>
-                                <div class="row collapse">
-                                    <div class="detail-description">
-                                        <div class="long_description">
-</div>
-
-                                        <table class="table">
-                                                                                            <tr>
-                                                    <th>
-                                                        type
-                                                    </th>
-                                                    <td>
-                                                                                                                    <p>int</p>
-
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        access
-                                                    </th>
-                                                    <td>
-                                                                                                                    <p>public</p>
-
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                    </table>
-                                    </div>
-                                </div>
-                            </div>
-                                                    <a id="property_tval"> </a>
-                            <div class="element clickable property public property_tval" data-toggle="collapse" data-target=".property_tval .collapse">
-                                <h2>POP3 Timeout Value in seconds.</h2>
-                                <pre>tval</pre>
-                                <div class="labels">
-                                                                                                        </div>
-                                <div class="row collapse">
-                                    <div class="detail-description">
-                                        <div class="long_description">
-</div>
-
-                                        <table class="table">
-                                                                                            <tr>
-                                                    <th>
-                                                        type
-                                                    </th>
-                                                    <td>
-                                                                                                                    <p>int</p>
-
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        access
-                                                    </th>
-                                                    <td>
-                                                                                                                    <p>public</p>
-
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                    </table>
-                                    </div>
-                                </div>
-                            </div>
-                                                    <a id="property_username"> </a>
-                            <div class="element clickable property public property_username" data-toggle="collapse" data-target=".property_username .collapse">
-                                <h2>POP3 username</h2>
-                                <pre>username</pre>
-                                <div class="labels">
-                                                                                                        </div>
-                                <div class="row collapse">
-                                    <div class="detail-description">
-                                        <div class="long_description">
-</div>
-
-                                        <table class="table">
-                                                                                            <tr>
-                                                    <th>
-                                                        type
-                                                    </th>
-                                                    <td>
-                                                                                                                    <p>string</p>
-
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        access
-                                                    </th>
-                                                    <td>
-                                                                                                                    <p>public</p>
-
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                    </table>
-                                    </div>
-                                </div>
-                            </div>
-                                                    <a id="property_password"> </a>
-                            <div class="element clickable property public property_password" data-toggle="collapse" data-target=".property_password .collapse">
-                                <h2>POP3 password.</h2>
-                                <pre>password</pre>
-                                <div class="labels">
-                                                                                                        </div>
-                                <div class="row collapse">
-                                    <div class="detail-description">
-                                        <div class="long_description">
-</div>
-
-                                        <table class="table">
-                                                                                            <tr>
-                                                    <th>
-                                                        type
-                                                    </th>
-                                                    <td>
-                                                                                                                    <p>string</p>
-
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        access
-                                                    </th>
-                                                    <td>
-                                                                                                                    <p>public</p>
-
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                    </table>
-                                    </div>
-                                </div>
-                            </div>
-                                                    <a id="property_pop_conn"> </a>
-                            <div class="element clickable property private property_pop_conn" data-toggle="collapse" data-target=".property_pop_conn .collapse">
-                                <h2>Resource handle for the POP3 connection socket.</h2>
-                                <pre>pop_conn</pre>
-                                <div class="labels">
-                                                                                                        </div>
-                                <div class="row collapse">
-                                    <div class="detail-description">
-                                        <div class="long_description">
-</div>
-
-                                        <table class="table">
-                                                                                            <tr>
-                                                    <th>
-                                                        type
-                                                    </th>
-                                                    <td>
-                                                                                                                    <p>resource</p>
-
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        access
-                                                    </th>
-                                                    <td>
-                                                                                                                    <p>private</p>
-
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                    </table>
-                                    </div>
-                                </div>
-                            </div>
-                                                    <a id="property_connected"> </a>
-                            <div class="element clickable property private property_connected" data-toggle="collapse" data-target=".property_connected .collapse">
-                                <h2>Are we connected?</h2>
-                                <pre>connected</pre>
-                                <div class="labels">
-                                                                                                        </div>
-                                <div class="row collapse">
-                                    <div class="detail-description">
-                                        <div class="long_description">
-</div>
-
-                                        <table class="table">
-                                                                                            <tr>
-                                                    <th>
-                                                        type
-                                                    </th>
-                                                    <td>
-                                                                                                                    <p>bool</p>
-
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        access
-                                                    </th>
-                                                    <td>
-                                                                                                                    <p>private</p>
-
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                    </table>
-                                    </div>
-                                </div>
-                            </div>
-                                                    <a id="property_error"> </a>
-                            <div class="element clickable property private property_error" data-toggle="collapse" data-target=".property_error .collapse">
-                                <h2>Error container.</h2>
-                                <pre>error</pre>
-                                <div class="labels">
-                                                                                                        </div>
-                                <div class="row collapse">
-                                    <div class="detail-description">
-                                        <div class="long_description">
-</div>
-
-                                        <table class="table">
-                                                                                            <tr>
-                                                    <th>
-                                                        type
-                                                    </th>
-                                                    <td>
-                                                                                                                    <p>array</p>
-
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        access
-                                                    </th>
-                                                    <td>
-                                                                                                                    <p>private</p>
-
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                            <tr>
-                                                    <th>
-                                                        
-                                                    </th>
-                                                    <td>
-                                                                                                            </td>
-                                                </tr>
-                                                                                    </table>
-                                    </div>
-                                </div>
-                            </div>
-                                                            </div>
+                        
+                        
+                        
+                        
+                                                                        </dl>
+                    <h2>Tags</h2>
+                    <table class="table table-condensed">
+                                            <tr>
+                            <th>
+                                author
+                            </th>
+                            <td>
+                                                                    <p>Richard Davey (original author) <rich@corephp.co.uk></p>
+                                                                    <p>Marcus Bointon (coolbru) <phpmailer@synchromedia.co.uk></p>
+                                                                    <p>Jim Jagielski (jimjag) <jimjag@gmail.com></p>
+                                                                    <p>Andy Prevost (codeworxtech) <codeworxtech@users.sourceforge.net></p>
+                                                            </td>
+                        </tr>
+                                            <tr>
+                            <th>
+                                todo
+                            </th>
+                            <td>
+                                                            </td>
+                        </tr>
+                                        </table>
+                </aside>
             </div>
-            <a id="\POP3"></a>
-            <ul class="breadcrumb">
-                <li><a href="../index.html"><i class="icon-custom icon-class"></i></a></li>
-                    
-    
-    <li><span class="divider">\</span><a href="../namespaces/default.html">\</a></li>
 
-                <li class="active"><span class="divider">\</span><a href="../classes/POP3.html">POP3</a></li>
-            </ul>
+                                    <a id="constants" name="constants"></a>
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <h2>Constants</h2>
+                </div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="constant_CRLF" name="constant_CRLF" class="anchor"></a>
+            <article id="constant_CRLF" class="constant">
+                <h3 class="">CRLF</h3>
+                <pre class="signature">CRLF</pre>
+                <p><em>Line break constant</em></p>
+                
+            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr><td colspan="2"><em>None found</em></td></tr>
+                            </table>
+        </aside>
+    </div>
+
+                            
+                                    <a id="properties" name="properties"></a>
+            <div class="row-fluid">
+                <div class="span8 content class">
+                    <h2>Properties</h2>
+                </div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_Version" name="property_Version" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$Version</h3>
+                <pre class="signature">$Version</pre>
+                <p><em>The POP3 PHPMailer Version number.</em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            type
+                        </th>
+                        <td>
+                                                            <p>string</p>
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_POP3_PORT" name="property_POP3_PORT" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$POP3_PORT</h3>
+                <pre class="signature">$POP3_PORT</pre>
+                <p><em>Default POP3 port number.</em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            type
+                        </th>
+                        <td>
+                                                            <p>int</p>
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_POP3_TIMEOUT" name="property_POP3_TIMEOUT" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$POP3_TIMEOUT</h3>
+                <pre class="signature">$POP3_TIMEOUT</pre>
+                <p><em>Default timeout in seconds.</em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            type
+                        </th>
+                        <td>
+                                                            <p>int</p>
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_CRLF" name="property_CRLF" class="anchor"></a>
+            <article class="property">
+                <h3 class="public deprecated">$CRLF</h3>
+                <pre class="signature">$CRLF</pre>
+                <p><em>POP3 Carriage Return + Line Feed.</em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                            <aside class="alert alert-block alert-error">
+                    <h4>Deprecated</h4>
+                    Use the constant instead
+                </aside>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            type
+                        </th>
+                        <td>
+                                                            <p>string</p>
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_do_debug" name="property_do_debug" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$do_debug</h3>
+                <pre class="signature">$do_debug</pre>
+                <p><em>Debug display level.</em></p>
+                <p>Options: 0 = no, 1+ = yes</p>
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            type
+                        </th>
+                        <td>
+                                                            <p>int</p>
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_host" name="property_host" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$host</h3>
+                <pre class="signature">$host</pre>
+                <p><em>POP3 mail server hostname.</em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            type
+                        </th>
+                        <td>
+                                                            <p>string</p>
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_port" name="property_port" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$port</h3>
+                <pre class="signature">$port</pre>
+                <p><em>POP3 port number.</em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            type
+                        </th>
+                        <td>
+                                                            <p>int</p>
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_tval" name="property_tval" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$tval</h3>
+                <pre class="signature">$tval</pre>
+                <p><em>POP3 Timeout Value in seconds.</em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            type
+                        </th>
+                        <td>
+                                                            <p>int</p>
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_username" name="property_username" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$username</h3>
+                <pre class="signature">$username</pre>
+                <p><em>POP3 username</em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            type
+                        </th>
+                        <td>
+                                                            <p>string</p>
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_password" name="property_password" class="anchor"></a>
+            <article class="property">
+                <h3 class="public ">$password</h3>
+                <pre class="signature">$password</pre>
+                <p><em>POP3 password.</em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            type
+                        </th>
+                        <td>
+                                                            <p>string</p>
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_pop_conn" name="property_pop_conn" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$pop_conn</h3>
+                <pre class="signature">$pop_conn</pre>
+                <p><em>Resource handle for the POP3 connection socket.</em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            type
+                        </th>
+                        <td>
+                                                            <p>resource</p>
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_connected" name="property_connected" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$connected</h3>
+                <pre class="signature">$connected</pre>
+                <p><em>Are we connected?</em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            type
+                        </th>
+                        <td>
+                                                            <p>bool</p>
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="property_error" name="property_error" class="anchor"></a>
+            <article class="property">
+                <h3 class="private ">$error</h3>
+                <pre class="signature">$error</pre>
+                <p><em>Error container.</em></p>
+                
+
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                        <dl>
+                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            type
+                        </th>
+                        <td>
+                                                            <p>array</p>
+                                                    </td>
+                    </tr>
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                            
+                                    <a id="methods" name="methods"></a>
+            <div class="row-fluid">
+                <div class="span8 content class"><h2>Methods</h2></div>
+                <aside class="span4 detailsbar"></aside>
+            </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method___construct" name="method___construct" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">__construct()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">__construct()</pre>
+                <p><em>Constructor.</em></p>
+                
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_popBeforeSmtp" name="method_popBeforeSmtp" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">popBeforeSmtp()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">popBeforeSmtp(mixed <span class="argument">$host</span>, bool <span class="argument">$port</span>, bool <span class="argument">$tval</span>, string <span class="argument">$username</span>, string <span class="argument">$password</span>, int <span class="argument">$debug_level</span>) : bool</pre>
+                <p><em>Simple static wrapper for all-in-one POP before SMTP</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>mixed</td>
+                                <td>$host</td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td>bool</td>
+                                <td>$port</td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td>bool</td>
+                                <td>$tval</td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$username</td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$password</td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td>int</td>
+                                <td>$debug_level</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    bool
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                            <span class="label label-info">static</span>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_authorise" name="method_authorise" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">authorise()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">authorise(string <span class="argument">$host</span>, bool|int <span class="argument">$port</span>, bool|int <span class="argument">$tval</span>, string <span class="argument">$username</span>, string <span class="argument">$password</span>, int <span class="argument">$debug_level</span>) : bool</pre>
+                <p><em>Authenticate with a POP3 server.</em></p>
+                <p>A connect, login, disconnect sequence
+appropriate for POP-before SMTP authorisation.</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$host</td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td>bool|int</td>
+                                <td>$port</td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td>bool|int</td>
+                                <td>$tval</td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$username</td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$password</td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td>int</td>
+                                <td>$debug_level</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    bool
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_connect" name="method_connect" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">connect()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">connect(string <span class="argument">$host</span>, bool|int <span class="argument">$port</span>, integer <span class="argument">$tval</span>) : boolean</pre>
+                <p><em>Connect to a POP3 server.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$host</td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td>bool|int</td>
+                                <td>$port</td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td>integer</td>
+                                <td>$tval</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_login" name="method_login" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">login()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">login(string <span class="argument">$username</span>, string <span class="argument">$password</span>) : boolean</pre>
+                <p><em>Log in to the POP3 server.</em></p>
+                <p>Does not support APOP (RFC 2828, 4949).</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$username</td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$password</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_disconnect" name="method_disconnect" class="anchor"></a>
+            <article class="method">
+                <h3 class="public ">disconnect()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">disconnect()</pre>
+                <p><em>Disconnect from the POP3 server.</em></p>
+                
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_getResponse" name="method_getResponse" class="anchor"></a>
+            <article class="method">
+                <h3 class="private ">getResponse()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">getResponse(integer <span class="argument">$size</span>) : string</pre>
+                <p><em>Get a response from the POP3 server.</em></p>
+                <p>$size is the maximum number of bytes to retrieve</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>integer</td>
+                                <td>$size</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    string
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_sendString" name="method_sendString" class="anchor"></a>
+            <article class="method">
+                <h3 class="private ">sendString()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">sendString(string <span class="argument">$string</span>) : integer</pre>
+                <p><em>Send raw data to the POP3 server.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$string</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    integer
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_checkResponse" name="method_checkResponse" class="anchor"></a>
+            <article class="method">
+                <h3 class="private ">checkResponse()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">checkResponse(string <span class="argument">$string</span>) : boolean</pre>
+                <p><em>Checks the POP3 server response.</em></p>
+                <p>Looks for for +OK or -ERR.</p>
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>string</td>
+                                <td>$string</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                                    <h4>Returns</h4>
+                    boolean
+                                                </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_displayErrors" name="method_displayErrors" class="anchor"></a>
+            <article class="method">
+                <h3 class="private ">displayErrors()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">displayErrors()</pre>
+                <p><em>Display errors if debug is enabled.</em></p>
+                
+
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    <div class="row-fluid">
+        <div class="span8 content class">
+            <a id="method_catchWarning" name="method_catchWarning" class="anchor"></a>
+            <article class="method">
+                <h3 class="private ">catchWarning()</h3>
+                <a href="#source-view" role="button" class="pull-right btn" data-toggle="modal" style="font-size: 1.1em; padding: 9px 14px"><i class="icon-code"></i></a>
+                <pre class="signature" style="margin-right: 54px;">catchWarning(integer <span class="argument">$errno</span>, string <span class="argument">$errstr</span>, string <span class="argument">$errfile</span>, integer <span class="argument">$errline</span>)</pre>
+                <p><em>POP3 connection error handler.</em></p>
+                
+
+                                    <h4>Parameters</h4>
+                    <table class="table table-condensed table-hover">
+                                                    <tr>
+                                <td>integer</td>
+                                <td>$errno</td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$errstr</td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td>string</td>
+                                <td>$errfile</td>
+                                <td></td>
+                            </tr>
+                                                    <tr>
+                                <td>integer</td>
+                                <td>$errline</td>
+                                <td></td>
+                            </tr>
+                                            </table>
+                
+                
+                            </article>
+        </div>
+        <aside class="span4 detailsbar">
+            <h1><i class="icon-arrow-down"></i></h1>
+                                                            <dl>
+                                                                            </dl>
+            <h2>Tags</h2>
+            <table class="table table-condensed">
+                                    <tr>
+                        <th>
+                            todo
+                        </th>
+                        <td>
+                                                    </td>
+                    </tr>
+                            </table>
+        </aside>
+    </div>
+
+                                    </div>
+    </section>
+
+    <div id="source-view" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="source-view-label" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="source-view-label">class.pop3.php</h3>
+        </div>
+        <div class="modal-body">
+            <pre data-src="../files/class.pop3.php.txt" class="language-php line-numbers"></pre>
         </div>
     </div>
 
-    </div>
-
-        <footer class="span12">
-            Template is built using <a href="http://twitter.github.com/bootstrap/">Twitter Bootstrap 2</a> and icons provided by
-            <a href="http://glyphicons.com/">Glyphicons</a>.<br/>
-            Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and<br/>
-            generated on Tue, 06 Aug 2013 14:53:13 +0200.<br/>
+    <footer class="row-fluid">
+        <section class="span10 offset2">
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <section class="row-fluid footer-sections">
+                        <section class="span4">
+                                                        <h1><i class="icon-code"></i></h1>
+                            <div>
+                                <ul>
+                                                                    </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-bar-chart"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="../graphs/class.html">Class Hierarchy Diagram</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                        <section class="span4">
+                                                        <h1><i class="icon-pushpin"></i></h1>
+                            <div>
+                                <ul>
+                                    <li><a href="../reports/errors.html">Errors</a></li>
+                                    <li><a href="../reports/markers.html">Markers</a></li>
+                                </ul>
+                            </div>
+                        </section>
+                    </section>
+                </section>
+            </section>
+            <section class="row-fluid">
+                <section class="span10 offset1">
+                    <hr />
+                    Documentation is powered by <a href="http://www.phpdoc.org/">phpDocumentor </a> and authored
+                    on December 16th, 2013 at 22:33.
+                </section>
+            </section>
+        </section>
     </footer>
-    </body>
+</div>
+
+</body>
 </html>
